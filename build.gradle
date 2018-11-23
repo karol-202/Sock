@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.2.51'
+}
+
+group 'pl.karol202.sock'
+version '0.1'
+
+sourceCompatibility = 1.11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    testImplementation 'junit:junit:4.12'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '1.11'
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '1.11'
+}

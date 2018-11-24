@@ -1,11 +1,11 @@
-package pl.karol202.sock
+package pl.karol202.sock.connection
 
 import java.io.InputStream
 import java.io.OutputStream
 import java.net.Socket
 
-class TCPConnection(val address: String,
-                    val port: Int) : Connection
+class TCPConnection(private val address: String,
+                    private val port: Int) : Connection
 {
 	private var socket: Socket? = null
 	private var inputStream: InputStream? = null

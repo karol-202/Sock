@@ -1,5 +1,8 @@
 package pl.karol202.sock.connection
 
+import com.github.kittinunf.result.Result
+import java.io.IOException
+
 interface AsyncConnection
 {
 	companion object
@@ -7,11 +10,11 @@ interface AsyncConnection
 		fun withCoroutines(connection: Connection) = CoroutinesAsyncConnection(connection)
 	}
 
-	fun connect(callback: (Result<Unit>) -> Unit)
+	fun connect(callback: (Result<Unit, Exception>) -> Unit)
 
-	fun read(callback: (Result<ByteArray>) -> Unit)
+	fun read(callback: (Result<ByteArray, IOException>) -> Unit)
 
-	fun send(data: ByteArray, callback: (Result<Unit>) -> Unit)
+	fun send(data: ByteArray, callback: (Result<Unit, IOException>) -> Unit)
 
-	fun close(callback: (Result<Unit>) -> Unit)
+	fun close(callback: (Result<Unit, IOException>) -> Unit)
 }

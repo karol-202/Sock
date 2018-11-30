@@ -9,6 +9,8 @@ interface AsyncConnection
 	companion object
 	{
 		fun withCoroutines(connection: Connection) = CoroutinesAsyncConnection(connection)
+
+		fun withCoroutinesOverTCP(address: String, port: Int) = withCoroutines(TCPConnection(address, port))
 	}
 
 	fun connect(coroutineScope: CoroutineScope, callback: (Result<Unit, Exception>) -> Unit)

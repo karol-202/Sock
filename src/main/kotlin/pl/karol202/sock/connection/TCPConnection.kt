@@ -7,30 +7,36 @@ import java.net.Socket
 class TCPConnection(private val address: String,
                     private val port: Int) : Connection
 {
-	private var socket: Socket? = null
-	private var inputStream: InputStream? = null
-	private var outputStream: OutputStream? = null
+	private class SocketConnection(val socket: Socket)
+	{
+		val inputStream: InputStream = socket.getInputStream()
+		val outputStream: OutputStream = socket.getOutputStream()
+	}
+
+	private var socketConnection: SocketConnection? = null
+
+	val isConnected: Boolean
+		get() = socketConnection != null
 
 	override fun connect()
 	{
-		val socket = Socket(address, port)
-		this.socket = socket
-		inputStream = socket.getInputStream()
-		outputStream = socket.getOutputStream()
+		if(isConnected) throw IllegalStateException("Already connected")
+		socketConnection = SocketConnection(Socket(address, port))
 	}
 
-	override fun read() = inputStream?.readBytes() ?: throw IllegalStateException("Not connected")
+	override fun read(): ByteArray
+	{
+		return socketConnection?.inputStream?.readBytes() ?: throw IllegalStateException("Not connected")
+	}
 
 	override fun send(data: ByteArray)
 	{
-		outputStream?.write(data) ?: throw IllegalStateException("Not connected")
+		socketConnection?.outputStream?.write(data) ?: throw IllegalStateException("Not connected")
 	}
 
 	override fun close()
 	{
-		socket?.close() ?: throw IllegalStateException("Not connected")
-		socket = null
-		inputStream = null
-		outputStream = null
+		socketConnection?.socket?.close() ?: throw IllegalStateException("Not connected")
+		socketConnection = null
 	}
 }

@@ -24,10 +24,7 @@ class TCPConnection(private val address: String,
 		socketConnection = SocketConnection(Socket(address, port))
 	}
 
-	override fun read(): ByteArray
-	{
-		return socketConnection?.inputStream?.readBytes() ?: throw IllegalStateException("Not connected")
-	}
+	override fun read(): ByteArray = socketConnection?.inputStream?.readBytes() ?: throw IllegalStateException("Not connected")
 
 	override fun send(data: ByteArray)
 	{

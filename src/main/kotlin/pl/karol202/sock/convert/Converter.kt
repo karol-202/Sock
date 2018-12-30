@@ -1,7 +1,7 @@
 package pl.karol202.sock.convert
 
 import com.github.kittinunf.result.Result
-import pl.karol202.plumber.unidirectional.TransitiveLayer
+import pl.karol202.plumber.TransitiveLayer
 import pl.karol202.sock.PublicApi
 
 @PublicApi

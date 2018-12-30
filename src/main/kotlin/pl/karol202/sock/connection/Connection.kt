@@ -1,6 +1,6 @@
 package pl.karol202.sock.connection
 
-import pl.karol202.plumber.bidirectional.TerminalBiLayer
+import pl.karol202.plumber.TerminalBiLayer
 import pl.karol202.sock.PublicApi
 
 @PublicApi

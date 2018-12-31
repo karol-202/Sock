@@ -1,4 +1,4 @@
-package pl.karol202.sock.convert
+package pl.karol202.sock.converter
 
 import com.github.kittinunf.result.Result
 

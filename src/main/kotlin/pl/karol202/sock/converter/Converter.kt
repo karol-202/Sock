@@ -1,6 +1,5 @@
 package pl.karol202.sock.converter
 
-import com.github.kittinunf.result.Result
 import pl.karol202.plumber.TransitiveLayer
 import pl.karol202.sock.PublicApi
 
@@ -14,10 +13,10 @@ interface Encoder<T : Any> : TransitiveLayer<T, ByteArray>
 }
 
 @PublicApi
-interface Decoder<T : Any> : TransitiveLayer<ByteArray, Result<T, Exception>>
+interface Decoder<T : Any> : TransitiveLayer<ByteArray, T>
 {
 	@PublicApi
-	fun decode(bytes: ByteArray): Result<T, Exception>
+	fun decode(bytes: ByteArray): T
 
 	override fun transform(input: ByteArray) = decode(input)
 }

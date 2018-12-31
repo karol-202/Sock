@@ -18,6 +18,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.11"
     implementation 'com.github.kittinunf.result:result:2.0.0'
     implementation 'com.squareup.moshi:moshi:1.8.0'
-    implementation 'com.github.karol-202:Plumber:b798585a99'
+    implementation 'com.github.karol-202:Plumber:c3a020713d'
     testImplementation 'junit:junit:4.12'
 }

@@ -11,36 +11,10 @@ abstract class ExceptionCatcher internal constructor(protected val exceptions: L
 	companion object
 	{
 		@PublicApi
-		fun <I, O> builder(pipeline: OpenUniPipeline<I, O>): UniPipelineBuilder<I, O, OpenUniPipeline<I, O>> =
-				OpenUniPipelineBuilder(pipeline)
+		fun uniPipelineBuilder(): UniPipelineBuilder = UniPipelineBuilder()
 
 		@PublicApi
-		fun <O> builder(pipeline: LeftClosedUniPipeline<O, *>): UniPipelineBuilder<Unit, O, LeftClosedUniPipeline<O, *>> =
-				LeftClosedUniPipelineBuilder(pipeline)
-
-		@PublicApi
-		fun <I> builder(pipeline: RightClosedUniPipeline<I, *>): UniPipelineBuilder<I, Unit, RightClosedUniPipeline<I, *>> =
-				RightClosedUniPipelineBuilder(pipeline)
-
-		@PublicApi
-		fun builder(pipeline: ClosedUniPipeline): UniPipelineBuilder<Unit, Unit, ClosedUniPipeline> =
-				ClosedUniPipelineBuilder(pipeline)
-
-		@PublicApi
-		fun <I, O> builder(pipeline: OpenBiPipeline<I, O>): BiPipelineBuilder<I, O, OpenBiPipeline<I, O>> =
-				OpenBiPipelineBuilder(pipeline)
-
-		@PublicApi
-		fun <O> builder(pipeline: LeftClosedBiPipeline<O, *>): BiPipelineBuilder<Unit, O, LeftClosedBiPipeline<O, *>> =
-				LeftClosedBiPipelineBuilder(pipeline)
-
-		@PublicApi
-		fun <I> builder(pipeline: RightClosedBiPipeline<I, *>): BiPipelineBuilder<I, Unit, RightClosedBiPipeline<I, *>> =
-				RightClosedBiPipelineBuilder(pipeline)
-
-		@PublicApi
-		fun builder(pipeline: ClosedBiPipeline): BiPipelineBuilder<Unit, Unit, ClosedBiPipeline> =
-				ClosedBiPipelineBuilder(pipeline)
+		fun biPipelineBuilder(): BiPipelineBuilder = BiPipelineBuilder()
 	}
 
 	data class ExceptionEntry<E : Exception> internal constructor(val klass: KClass<E>,
@@ -59,84 +33,50 @@ abstract class ExceptionCatcher internal constructor(protected val exceptions: L
 		{
 			exceptions.add(ExceptionEntry(klass, handler))
 		}
-
-		internal abstract fun createLayer(): ExceptionCatcher
 	}
 
 	@PublicApi
-	abstract class UniPipelineBuilder<I, O, P : UniPipeline<I, O>> protected constructor(private val pipeline: UniPipeline<I, O>) :
-			Builder()
+	class UniPipelineBuilder internal constructor() : Builder()
 	{
-		@PublicApi
-		abstract fun createPipeline(): P
+		private fun <I, O> createLayer(pipeline: UniPipeline<I, O>) = UniPipelineExceptionCatcher(pipeline, exceptions)
 
-		override fun createLayer() = UniPipelineExceptionCatcher(pipeline, exceptions)
-	}
-
-	private class OpenUniPipelineBuilder<I, O> @PublishedApi internal constructor(pipeline: UniPipeline<I, O>) :
-			UniPipelineBuilder<I, O, OpenUniPipeline<I, O>>(pipeline)
-	{
 		@PublicApi
-		override fun createPipeline(): OpenUniPipeline<I, O> = createLayer().toOpenUniPipeline()
-	}
+		fun <I, O> createPipeline(pipeline: OpenUniPipeline<I, O>): OpenUniPipeline<I, O> =
+				createLayer(pipeline).toOpenUniPipeline()
 
-	private class LeftClosedUniPipelineBuilder<O> @PublishedApi internal constructor(pipeline: LeftClosedUniPipeline<O, *>) :
-			UniPipelineBuilder<Unit, O, LeftClosedUniPipeline<O, *>>(pipeline)
-	{
 		@PublicApi
-		override fun createPipeline(): LeftClosedUniPipeline<O, Unit> = PlaceholderUniLayer + createLayer().toOpenUniPipeline()
-	}
+		fun <O> createPipeline(pipeline: LeftClosedUniPipeline<O, *>): LeftClosedUniPipeline<O, Unit> =
+				PlaceholderUniLayer + createLayer(pipeline).toOpenUniPipeline()
 
-	private class RightClosedUniPipelineBuilder<I> @PublishedApi internal constructor(pipeline: RightClosedUniPipeline<I, *>) :
-			UniPipelineBuilder<I, Unit, RightClosedUniPipeline<I, *>>(pipeline)
-	{
 		@PublicApi
-		override fun createPipeline(): RightClosedUniPipeline<I, *> = createLayer().toOpenUniPipeline() + PlaceholderUniLayer
-	}
+		fun <I> createPipeline(pipeline: RightClosedUniPipeline<I, *>): RightClosedUniPipeline<I, *> =
+				createLayer(pipeline).toOpenUniPipeline() + PlaceholderUniLayer
 
-	private class ClosedUniPipelineBuilder @PublishedApi internal constructor(pipeline: ClosedUniPipeline) :
-			UniPipelineBuilder<Unit, Unit, ClosedUniPipeline>(pipeline)
-	{
 		@PublicApi
-		override fun createPipeline(): ClosedUniPipeline = PlaceholderUniLayer + createLayer().toOpenUniPipeline() + PlaceholderUniLayer
+		fun createPipeline(pipeline: ClosedUniPipeline): ClosedUniPipeline =
+				PlaceholderUniLayer + createLayer(pipeline).toOpenUniPipeline() + PlaceholderUniLayer
 	}
 
 	@PublicApi
-	abstract class BiPipelineBuilder<I, O, P : BiPipeline<I, O>> protected constructor(private val pipeline: BiPipeline<I, O>) :
-		Builder()
+	class BiPipelineBuilder internal constructor() : Builder()
 	{
-		@PublicApi
-		abstract fun createPipeline(): P
+		private fun <I, O> createLayer(pipeline: BiPipeline<I, O>) = BiPipelineExceptionCatcher(pipeline, exceptions)
 
-		override fun createLayer() = BiPipelineExceptionCatcher(pipeline, exceptions)
-	}
-
-	private class OpenBiPipelineBuilder<I, O> @PublishedApi internal constructor(pipeline: BiPipeline<I, O>) :
-			BiPipelineBuilder<I, O, OpenBiPipeline<I, O>>(pipeline)
-	{
 		@PublicApi
-		override fun createPipeline(): OpenBiPipeline<I, O> = createLayer().toOpenBiPipeline()
-	}
+		fun <I, O> createPipeline(pipeline: OpenBiPipeline<I, O>): OpenBiPipeline<I, O> =
+				createLayer(pipeline).toOpenBiPipeline()
 
-	private class LeftClosedBiPipelineBuilder<O> @PublishedApi internal constructor(pipeline: LeftClosedBiPipeline<O, *>) :
-			BiPipelineBuilder<Unit, O, LeftClosedBiPipeline<O, *>>(pipeline)
-	{
 		@PublicApi
-		override fun createPipeline(): LeftClosedBiPipeline<O, Unit> = PlaceholderBiLayer + createLayer().toOpenBiPipeline()
-	}
+		fun <O> createPipeline(pipeline: LeftClosedBiPipeline<O, *>): LeftClosedBiPipeline<O, Unit> =
+				PlaceholderBiLayer + createLayer(pipeline).toOpenBiPipeline()
 
-	private class RightClosedBiPipelineBuilder<I> @PublishedApi internal constructor(pipeline: RightClosedBiPipeline<I, *>) :
-			BiPipelineBuilder<I, Unit, RightClosedBiPipeline<I, *>>(pipeline)
-	{
 		@PublicApi
-		override fun createPipeline(): RightClosedBiPipeline<I, *> = createLayer().toOpenBiPipeline() + PlaceholderBiLayer
-	}
+		fun <I> createPipeline(pipeline: RightClosedBiPipeline<I, *>): RightClosedBiPipeline<I, *> =
+				createLayer(pipeline).toOpenBiPipeline() + PlaceholderBiLayer
 
-	private class ClosedBiPipelineBuilder @PublishedApi internal constructor(pipeline: ClosedBiPipeline) :
-			BiPipelineBuilder<Unit, Unit, ClosedBiPipeline>(pipeline)
-	{
 		@PublicApi
-		override fun createPipeline(): ClosedBiPipeline = PlaceholderBiLayer + createLayer().toOpenBiPipeline() + PlaceholderBiLayer
+		fun createPipeline(pipeline: ClosedBiPipeline): ClosedBiPipeline =
+				PlaceholderBiLayer + createLayer(pipeline).toOpenBiPipeline() + PlaceholderBiLayer
 	}
 
 	private object PlaceholderUniLayer : CreatorLayer<Unit>, ConsumerLayer<Unit>
@@ -154,7 +94,7 @@ abstract class ExceptionCatcher internal constructor(protected val exceptions: L
 	protected inline fun <reified E : Exception> handleException(exception: E)
 	{
 		val entry = exceptions.firstOrNull { E::class.isSubclassOf(it.klass) } as ExceptionEntry<E>?
-		entry?.handler?.invoke(exception)
+		entry?.handler?.invoke(exception) ?: throw exception
 	}
 }
 
@@ -199,7 +139,4 @@ internal class BiPipelineExceptionCatcher<I, O> internal constructor(private val
 		handleException(e)
 		Output.NoValue()
 	}
-
-	//@PublicApi
-	//override fun toOpenUniPipeline(): OpenUniPipeline<I, O> = super<TransitiveLayerW>.toOpenUniPipeline()
 }

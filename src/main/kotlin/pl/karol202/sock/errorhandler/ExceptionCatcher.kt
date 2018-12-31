@@ -25,9 +25,6 @@ abstract class ExceptionCatcher internal constructor(protected val exceptions: L
 	{
 		protected val exceptions = mutableListOf<ExceptionEntry<*>>()
 
-		@PublicApi
-		inline fun <reified E: Exception> addHandler(noinline handler: (E) -> Unit) : Unit = addHandler(E::class, handler)
-
 		@PublishedApi
 		internal fun <E: Exception> addHandler(klass: KClass<E>, handler: (E) -> Unit)
 		{
@@ -38,6 +35,13 @@ abstract class ExceptionCatcher internal constructor(protected val exceptions: L
 	@PublicApi
 	class UniPipelineBuilder internal constructor() : Builder()
 	{
+		@PublicApi
+		inline fun <reified E: Exception> addHandler(noinline handler: (E) -> Unit) : UniPipelineBuilder
+		{
+			addHandler(E::class, handler)
+			return this
+		}
+
 		private fun <I, O> createLayer(pipeline: UniPipeline<I, O>) = UniPipelineExceptionCatcher(pipeline, exceptions)
 
 		@PublicApi
@@ -60,6 +64,13 @@ abstract class ExceptionCatcher internal constructor(protected val exceptions: L
 	@PublicApi
 	class BiPipelineBuilder internal constructor() : Builder()
 	{
+		@PublicApi
+		inline fun <reified E: Exception> addHandler(noinline handler: (E) -> Unit) : BiPipelineBuilder
+		{
+			addHandler(E::class, handler)
+			return this
+		}
+
 		private fun <I, O> createLayer(pipeline: BiPipeline<I, O>) = BiPipelineExceptionCatcher(pipeline, exceptions)
 
 		@PublicApi

@@ -25,6 +25,22 @@ abstract class ExceptionCatcher internal constructor(protected val exceptions: L
 		@PublicApi
 		fun builder(pipeline: ClosedUniPipeline): UniPipelineBuilder<Unit, Unit, ClosedUniPipeline> =
 				ClosedUniPipelineBuilder(pipeline)
+
+		@PublicApi
+		fun <I, O> builder(pipeline: OpenBiPipeline<I, O>): BiPipelineBuilder<I, O, OpenBiPipeline<I, O>> =
+				OpenBiPipelineBuilder(pipeline)
+
+		@PublicApi
+		fun <O> builder(pipeline: LeftClosedBiPipeline<O, *>): BiPipelineBuilder<Unit, O, LeftClosedBiPipeline<O, *>> =
+				LeftClosedBiPipelineBuilder(pipeline)
+
+		@PublicApi
+		fun <I> builder(pipeline: RightClosedBiPipeline<I, *>): BiPipelineBuilder<I, Unit, RightClosedBiPipeline<I, *>> =
+				RightClosedBiPipelineBuilder(pipeline)
+
+		@PublicApi
+		fun builder(pipeline: ClosedBiPipeline): BiPipelineBuilder<Unit, Unit, ClosedBiPipeline> =
+				ClosedBiPipelineBuilder(pipeline)
 	}
 
 	data class ExceptionEntry<E : Exception> internal constructor(val klass: KClass<E>,

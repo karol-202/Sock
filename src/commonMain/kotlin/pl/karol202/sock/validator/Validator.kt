@@ -20,3 +20,13 @@ interface Validator : TransitiveBiLayerWithFlowControl<ByteArray, ByteArray>
 	@PublicApi
 	fun applyValidationData(data: ByteArray): ByteArray
 }
+
+@PublicApi
+expect object ValidatorFactory
+{
+	@PublicApi
+	fun createDiscardingLengthValidator(): Validator
+
+	@PublicApi
+	fun createBufferedLengthValidator(): Validator
+}

@@ -20,3 +20,13 @@ interface Decoder<T : Any> : TransitiveLayer<ByteArray, T>
 
 	override fun transform(input: ByteArray) = decode(input)
 }
+
+@PublicApi
+expect object ConverterFactory
+{
+	@PublicApi
+	inline fun <reified T : Any> createJsonEncoder(): Encoder<T>
+
+	@PublicApi
+	inline fun <reified T : Any> createJsonDecoder(): Decoder<T>
+}

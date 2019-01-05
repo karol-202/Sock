@@ -6,8 +6,8 @@ import java.io.OutputStream
 import java.net.Socket
 
 @PublicApi
-class TCPConnection(private val address: String,
-                    private val port: Int) : Connection
+class JvmTCPConnection(private val address: String,
+                       private val port: Int) : TCPConnection
 {
 	private class SocketConnection(val socket: Socket)
 	{
@@ -18,7 +18,7 @@ class TCPConnection(private val address: String,
 	private var socketConnection: SocketConnection? = null
 
 	@PublicApi
-	val isConnected: Boolean
+	override val isConnected: Boolean
 		get() = socketConnection != null
 
 	@PublicApi

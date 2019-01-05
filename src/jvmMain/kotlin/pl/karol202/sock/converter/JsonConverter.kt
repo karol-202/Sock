@@ -5,14 +5,8 @@ import com.squareup.moshi.Moshi
 import pl.karol202.sock.PublicApi
 
 @PublicApi
-class JsonEncoder<T : Any>(clazz: Class<T>): Encoder<T>
+class JvmJsonEncoder<T : Any>(clazz: Class<T>) : Encoder<T>
 {
-	companion object
-	{
-		@PublicApi
-		inline fun <reified T : Any> create() = JsonEncoder(T::class.java)
-	}
-
 	private val adapter: JsonAdapter<T> = Moshi.Builder().build().adapter<T>(clazz)
 
 	@PublicApi
@@ -20,14 +14,8 @@ class JsonEncoder<T : Any>(clazz: Class<T>): Encoder<T>
 }
 
 @PublicApi
-class JsonDecoder<T : Any>(clazz: Class<T>): Decoder<T>
+class JvmJsonDecoder<T : Any>(clazz: Class<T>): Decoder<T>
 {
-	companion object
-	{
-		@PublicApi
-		inline fun <reified T : Any> create() = JsonDecoder(T::class.java)
-	}
-
 	private val adapter: JsonAdapter<T> = Moshi.Builder().build().adapter<T>(clazz)
 
 	@PublicApi

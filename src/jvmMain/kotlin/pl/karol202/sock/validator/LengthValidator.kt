@@ -4,7 +4,7 @@ import pl.karol202.sock.PublicApi
 import java.nio.ByteBuffer
 
 @PublicApi
-abstract class LengthValidator : Validator
+abstract class JvmLengthValidator : Validator
 {
 	@PublicApi
 	override fun applyValidationData(data: ByteArray): ByteArray = data.size.toByteArray() + data
@@ -15,7 +15,7 @@ abstract class LengthValidator : Validator
 }
 
 @PublicApi
-class DiscardingLengthValidator : LengthValidator()
+class JvmDiscardingLengthValidator : JvmLengthValidator()
 {
 	@PublicApi
 	override fun validate(data: ByteArray): ByteArray?
@@ -27,7 +27,7 @@ class DiscardingLengthValidator : LengthValidator()
 }
 
 @PublicApi
-class BufferedLengthValidator : LengthValidator()
+class JvmBufferedLengthValidator : JvmLengthValidator()
 {
 	private var expectedLength: Int? = null
 	private var buffer = listOf<Byte>()
